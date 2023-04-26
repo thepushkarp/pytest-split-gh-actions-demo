@@ -9,9 +9,9 @@ jobs:
       matrix:
         group: [1, 2, 3, 4, 5]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python 3.8
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: 3.9
       - name: Install deps
@@ -19,9 +19,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run pytest
-        run: pytest --cov --splits 5 --group ${{ matrix.group }}
+        run: pytest --cov --splits 5 --group ${{ matrix.group }} --splitting-algorithm least_duration
       - name: Upload coverage
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage${{ matrix.group }}
           path: .coverage
@@ -30,9 +30,9 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up Python 3.9
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: 3.9
       - name: Install deps
@@ -41,10 +41,10 @@ jobs:
           pip install -r requirements.txt
       - name: Download all artifacts
         # Downloads coverage1, coverage2, etc.
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
       - name: Run coverage
         run: |
           coverage combine coverage*/.coverage*
           coverage report --fail-under=100
           coverage xml
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v3
